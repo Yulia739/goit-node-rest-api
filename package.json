@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Yulia739/goit-node-rest-api#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "joi": "^18.0.2",
     "nanoid": "^5.1.6"
   }
 }
