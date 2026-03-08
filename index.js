@@ -1,37 +1,22 @@
-import { program } from "commander";
-program
-  .option("-a, --action <type>", "choose action")
-  .option("-i, --id <type>", "user id")
-  .option("-n, --name <type>", "user name")
-  .option("-e, --email <type>", "user email")
-  .option("-p, --phone <type>", "user phone");
+require("dotenv").config();
 
-program.parse();
+const app = require("./app");
+const { sequelize } = require("./db/sequelize");
 
-const options = program.opts();
+const PORT = process.env.PORT || 3000;
 
-// TODO: рефакторити
-async function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      // ...
-      break;
-
-    case "get":
-      // ... id
-      break;
-
-    case "add":
-      // ... name email phone
-      break;
-
-    case "remove":
-      // ... id
-      break;
-
-    default:
-      console.warn("\x1B[31m Unknown action type!");
-  }
-}
-
-invokeAction(options);
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Database connection successful");
+    return sequelize.sync();
+  })
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
