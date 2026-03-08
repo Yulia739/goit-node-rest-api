@@ -14,13 +14,13 @@ const {
 } = require("../schemas/contactsSchemas");
 
 const getAllContacts = async (req, res) => {
-  const contacts = await listContacts();
+  const contacts = await listContacts(req.user.id);
   res.status(200).json(contacts);
 };
 
 const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const contact = await getContactById(id);
+  const contact = await getContactById(id, req.user.id);
 
   if (!contact) {
     return res.status(404).json({ message: "Not found" });
@@ -31,7 +31,7 @@ const getOneContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const removedContact = await removeContact(id);
+  const removedContact = await removeContact(id, req.user.id);
 
   if (!removedContact) {
     return res.status(404).json({ message: "Not found" });
@@ -48,7 +48,7 @@ const createContact = async (req, res) => {
   }
 
   const { name, email, phone, favorite } = req.body;
-  const newContact = await addContact(name, email, phone, favorite);
+  const newContact = await addContact(name, email, phone, favorite, req.user.id);
 
   res.status(201).json(newContact);
 };
@@ -65,7 +65,7 @@ const updateOneContact = async (req, res) => {
   }
 
   const { id } = req.params;
-  const updatedContact = await updateContact(id, req.body);
+  const updatedContact = await updateContact(id, req.body, req.user.id);
 
   if (!updatedContact) {
     return res.status(404).json({ message: "Not found" });
@@ -86,7 +86,7 @@ const updateContactStatus = async (req, res) => {
   }
 
   const { contactId } = req.params;
-  const updatedContact = await updateStatusContact(contactId, req.body);
+  const updatedContact = await updateStatusContact(contactId, req.body, req.user.id);
 
   if (!updatedContact) {
     return res.status(404).json({ message: "Not found" });

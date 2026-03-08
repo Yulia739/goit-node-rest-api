@@ -7,9 +7,15 @@ const PORT = process.env.PORT || 3000;
 
 sequelize
   .authenticate()
-  .then(() => {
+  .then(async () => {
     console.log("Database connection successful");
-    return sequelize.sync();
+    const [rows] = await sequelize.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name='contacts' AND column_name='owner'"
+    );
+    if (rows.length === 0) {
+      await sequelize.query("TRUNCATE TABLE contacts RESTART IDENTITY CASCADE").catch(() => {});
+    }
+    return sequelize.sync({ alter: true });
   })
   .then(() => {
     app.listen(PORT, () => {

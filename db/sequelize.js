@@ -10,6 +10,26 @@ const sequelize = new Sequelize(process.env.DB_URI, {
   },
 });
 
+const User = sequelize.define("user", {
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  subscription: {
+    type: DataTypes.ENUM("starter", "pro", "business"),
+    defaultValue: "starter",
+  },
+  token: {
+    type: DataTypes.STRING,
+    defaultValue: null,
+  },
+});
+
 const Contact = sequelize.define("contact", {
   name: {
     type: DataTypes.STRING,
@@ -27,6 +47,10 @@ const Contact = sequelize.define("contact", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  owner: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
-module.exports = { sequelize, Contact };
+module.exports = { sequelize, User, Contact };

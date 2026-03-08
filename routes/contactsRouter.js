@@ -7,8 +7,11 @@ const {
   updateOneContact,
   updateContactStatus,
 } = require("../controllers/contactsControllers");
+const authenticate = require("../middleware/authenticate");
 
 const router = express.Router();
+
+router.use(authenticate);
 
 router.get("/", getAllContacts);
 router.get("/:id", getOneContact);
