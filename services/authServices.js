@@ -1,12 +1,17 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import { nanoid } from "nanoid";
 import { User } from "../db/sequelize.js";
+import { sendVerificationEmail } from "./emailService.js";
 
 async function registerUser(email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: "200", d: "retro" }, true);
-  return User.create({ email, password: hashedPassword, avatarURL });
+  const verificationToken = nanoid();
+  const user = await User.create({ email, password: hashedPassword, avatarURL, verificationToken });
+  await sendVerificationEmail(email, verificationToken);
+  return user;
 }
 
 async function loginUser(email, password) {
@@ -15,6 +20,8 @@ async function loginUser(email, password) {
 
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) return null;
+
+  if (!user.verify) return { unverified: true };
 
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: "23h",
@@ -45,4 +52,28 @@ async function updateUserAvatar(userId, avatarURL) {
   return user.update({ avatarURL });
 }
 
-export { registerUser, loginUser, logoutUser, getUserById, findUserByEmail, updateUserAvatar };
+async function verifyUserToken(verificationToken) {
+  const user = await User.findOne({ where: { verificationToken } });
+  if (!user) return null;
+  await user.update({ verify: true, verificationToken: null });
+  return user;
+}
+
+async function resendVerification(email) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) return { notFound: true };
+  if (user.verify) return { alreadyVerified: true };
+  await sendVerificationEmail(email, user.verificationToken);
+  return { sent: true };
+}
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUserById,
+  findUserByEmail,
+  updateUserAvatar,
+  verifyUserToken,
+  resendVerification,
+};

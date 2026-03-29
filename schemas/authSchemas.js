@@ -10,4 +10,8 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-export { registerSchema, loginSchema };
+const resendVerificationSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+export { registerSchema, loginSchema, resendVerificationSchema };
