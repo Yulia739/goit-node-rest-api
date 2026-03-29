@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { getUserById } = require("../services/authServices");
+import jwt from "jsonwebtoken";
+import { getUserById } from "../services/authServices.js";
 
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -27,4 +27,4 @@ const authenticate = async (req, res, next) => {
   next();
 };
 
-module.exports = authenticate;
+export default authenticate;

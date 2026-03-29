@@ -1,6 +1,6 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { User } = require("../db/sequelize");
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { User } from "../db/sequelize.js";
 
 async function registerUser(email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,4 +37,4 @@ async function findUserByEmail(email) {
   return User.findOne({ where: { email } });
 }
 
-module.exports = { registerUser, loginUser, logoutUser, getUserById, findUserByEmail };
+export { registerUser, loginUser, logoutUser, getUserById, findUserByEmail };

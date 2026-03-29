@@ -1,17 +1,17 @@
-const {
+import {
   listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
   updateStatusContact,
-} = require("../services/contactsServices");
+} from "../services/contactsServices.js";
 
-const {
+import {
   addContactSchema,
   updateContactSchema,
   updateStatusSchema,
-} = require("../schemas/contactsSchemas");
+} from "../schemas/contactsSchemas.js";
 
 const getAllContacts = async (req, res) => {
   const contacts = await listContacts(req.user.id);
@@ -95,7 +95,7 @@ const updateContactStatus = async (req, res) => {
   res.status(200).json(updatedContact);
 };
 
-module.exports = {
+export {
   getAllContacts,
   getOneContact,
   deleteContact,

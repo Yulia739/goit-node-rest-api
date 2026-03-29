@@ -1,4 +1,4 @@
-const { Contact } = require("../db/sequelize");
+import { Contact } from "../db/sequelize.js";
 
 async function listContacts(owner) {
   return Contact.findAll({ where: { owner } });
@@ -31,7 +31,7 @@ async function updateStatusContact(contactId, { favorite }, owner) {
   return contact.update({ favorite });
 }
 
-module.exports = {
+export {
   listContacts,
   getContactById,
   removeContact,

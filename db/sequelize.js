@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize");
+import { Sequelize, DataTypes } from "sequelize";
 
 const sequelize = new Sequelize(process.env.DB_URI, {
   dialect: "postgres",
@@ -53,4 +53,4 @@ const Contact = sequelize.define("contact", {
   },
 });
 
-module.exports = { sequelize, User, Contact };
+export { sequelize, User, Contact };

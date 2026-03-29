@@ -1,10 +1,10 @@
-const {
+import {
   registerUser,
   loginUser,
   logoutUser,
   findUserByEmail,
-} = require("../services/authServices");
-const { registerSchema, loginSchema } = require("../schemas/authSchemas");
+} from "../services/authServices.js";
+import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 
 const register = async (req, res) => {
   const { error } = registerSchema.validate(req.body);
@@ -62,4 +62,4 @@ const getCurrent = (req, res) => {
   });
 };
 
-module.exports = { register, login, logout, getCurrent };
+export { register, login, logout, getCurrent };
