@@ -1,10 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 import { User } from "../db/sequelize.js";
 
 async function registerUser(email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  return User.create({ email, password: hashedPassword });
+  const avatarURL = gravatar.url(email, { s: "200", d: "retro" }, true);
+  return User.create({ email, password: hashedPassword, avatarURL });
 }
 
 async function loginUser(email, password) {
@@ -37,4 +39,10 @@ async function findUserByEmail(email) {
   return User.findOne({ where: { email } });
 }
 
-export { registerUser, loginUser, logoutUser, getUserById, findUserByEmail };
+async function updateUserAvatar(userId, avatarURL) {
+  const user = await User.findByPk(userId);
+  if (!user) return null;
+  return user.update({ avatarURL });
+}
+
+export { registerUser, loginUser, logoutUser, getUserById, findUserByEmail, updateUserAvatar };
